@@ -38,7 +38,7 @@ class Friends extends React.Component {
   }
 
   appendToList = () => {
-    console.log("bt pressed");
+    console.log(this.state.list.length + "bt pressed " + this.state.friendName);
     let temp = [];
     const currList = this.state.list;
     currList.forEach(element => {
@@ -46,6 +46,7 @@ class Friends extends React.Component {
       console.log(element);
     });
     if (this.state.friendName) temp.push(this.state.friendName);
+    console.log(temp.length);
     this.setState({ list: temp, friendName: "" });
   };
 
@@ -68,18 +69,13 @@ class Friends extends React.Component {
             />
           </View>
         </View>
-        <View style={styles.body}>
-          <ScrollView style={styles.scroll}>
-            <TouchableOpacity>
-              <Text>Hola</Text>
+        <ScrollView style={styles.body}>
+          {this.state.list.map((data, key) => (
+            <TouchableOpacity key={key}>
+              <Text>{data}</Text>
             </TouchableOpacity>
-            {this.state.list.map((data, index) => {
-              <View key={index}>
-                <Text>{data}</Text>
-              </View>
-            })}
-          </ScrollView>
-        </View>
+          ))}
+        </ScrollView>
       </View>
     );
   }
@@ -110,7 +106,7 @@ const AppNavigator = createStackNavigator(
     Bill: Bill
   },
   {
-    initialRouteName: "HomeScreen"
+    initialRouteName: "Friends"
   }
 );
 
