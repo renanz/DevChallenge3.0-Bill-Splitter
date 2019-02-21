@@ -38,15 +38,12 @@ class Friends extends React.Component {
   }
 
   appendToList = () => {
-    console.log(this.state.list.length + "bt pressed " + this.state.friendName);
     let temp = [];
     const currList = this.state.list;
     currList.forEach(element => {
       temp.push(element);
-      console.log(element);
     });
     if (this.state.friendName) temp.push(this.state.friendName);
-    console.log(temp.length);
     this.setState({ list: temp, friendName: "" });
   };
 
@@ -71,9 +68,14 @@ class Friends extends React.Component {
         </View>
         <ScrollView style={styles.body}>
           {this.state.list.map((data, key) => (
-            <TouchableOpacity key={key}>
-              <Text>{data}</Text>
-            </TouchableOpacity>
+            <View key={key} style={styles.element}>
+              <View style={styles.listItem}>
+                <Text style={{paddingLeft: 10}}>{data}</Text>
+              </View>
+              <TouchableOpacity style={styles.listItemDelete} onPress={() => this.setState(() => ({ list: this.state.list.splice(key, 1)}))}>
+                <Text style={{color: "white"}}>Delete</Text>
+              </TouchableOpacity>
+            </View>
           ))}
         </ScrollView>
       </View>
@@ -118,16 +120,27 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   header: {
-    marginTop: 60
+    marginTop: 40
   },
   button: {
     width: "30%"
   },
   body: {
-    marginTop: 100
+    marginTop: 10,
+    width: "100%"
   },
-  scroll: {},
-  touchItem: {},
+  listItem: {
+    backgroundColor: "#CFCFCF", 
+    width: "80%",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  listItemDelete: {
+    backgroundColor: "red", 
+    width: "20%",
+    alignItems: "center",
+    justifyContent: "center"
+  },
   textInput: {
     marginRight: 3,
     borderColor: "black",
@@ -136,6 +149,14 @@ const styles = StyleSheet.create({
     paddingLeft: 5
   },
   input: {
+    flexDirection: "row",
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  element: {
+    height: 40,
+    marginTop: 5,
     flexDirection: "row"
   }
 });
