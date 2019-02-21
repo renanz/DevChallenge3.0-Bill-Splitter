@@ -67,3 +67,4 @@ npm-debug.*
 *.p12
 *.key
 *.mobileprovision
+package-lock.json
