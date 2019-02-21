@@ -21,7 +21,7 @@ class HomeScreen extends React.Component {
         <Text>To Start, you should enter the names of your friends</Text>
         <Button
           title="Add friends"
-          onPress={this.props.navigation.navigate("Friends", {})}
+          onPress={() => this.props.navigation.navigate("Friends", {})}
         />
       </View>
     );
@@ -36,48 +36,76 @@ class Friends extends React.Component {
       friendName: ""
     };
   }
+
+  appendToList = () => {
+    console.log("bt pressed");
+    let temp = [];
+    const currList = this.state.list;
+    currList.forEach(element => {
+      temp.push(element);
+      console.log(element);
+    });
+    if (this.state.friendName) temp.push(this.state.friendName);
+    this.setState({ list: temp, friendName: "" });
+  };
+
   render() {
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TextInput
-          value={this.state.friendName}
-          style={styles.TextInput}
-          editable={true}
-          placeholder="Name"
-          onChangeText={text => this.setState({ friendName: text })}
-        />
-        <Button
-          title="Add friend"
-          onPress={() => {
-            let newList = this.state.list;
-            newList.push(this.state.friendName);
-            this.setState({ list: newList });
-          }}
-        />
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.input}>
+            <TextInput
+              value={this.state.friendName}
+              style={styles.textInput}
+              editable={true}
+              placeholder="Name"
+              onChangeText={text => this.setState({ friendName: text })}
+            />
+            <Button
+              title="Add friend"
+              style={styles.button}
+              onPress={this.appendToList}
+            />
+          </View>
+        </View>
+        <View style={styles.body}>
+          <ScrollView style={styles.scroll}>
+            <TouchableOpacity>
+              <Text>Hola</Text>
+            </TouchableOpacity>
+            {this.state.list.map((data, index) => {
+              <View key={index}>
+                <Text>{data}</Text>
+              </View>
+            })}
+          </ScrollView>
+        </View>
       </View>
-      <View style={styles.body}>
-        <ScrollView style={styles.scroll}>
-          {this.state.list.map((data, index) => {
-            <TouchableOpacity
-              key={index}
-              style={styles.touchItem}
-              onPress={() =>
-                this.props.navigation.navigate("Bill", { friendsList: list })
-              }
-            >
-              <Text>{data}</Text>
-            </TouchableOpacity>;
-          })}
-        </ScrollView>
-      </View>
-    </View>;
+    );
+  }
+}
+
+class Bill extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      friendsList: [],
+      subtotal: 0,
+      total: 0,
+      tax: 0,
+      serviceTax: 0,
+      beverageTax: 0
+    };
+  }
+  render() {
+    return <View style={styles.container} />;
   }
 }
 
 const AppNavigator = createStackNavigator(
   {
     HomeScreen: HomeScreen,
-    SplittedBill: SplittedBill,
+    // SplittedBill: SplittedBill,
     Friends: Friends,
     Bill: Bill
   },
@@ -94,16 +122,25 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   header: {
-
+    marginTop: 60
+  },
+  button: {
+    width: "30%"
   },
   body: {
-
+    marginTop: 100
   },
-  scroll: {
-
+  scroll: {},
+  touchItem: {},
+  textInput: {
+    marginRight: 3,
+    borderColor: "black",
+    borderWidth: 2,
+    width: "70%",
+    paddingLeft: 5
   },
-  touchItem: {
-    
+  input: {
+    flexDirection: "row"
   }
 });
 
