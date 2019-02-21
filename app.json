@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "DevChallenge3.0_BillSplitter",
-    "description": "This project is really great.",
-    "slug": "DevChallenge3.0_BillSplitter",
+    "name": "Bill Splitter - DevChallenge 3.0",
+    "description": "A simple tool to help you and your friends split bills when you go out to eat together.",
+    "slug": "BillSplitter-DevChallenge3.0",
     "privacy": "public",
     "sdkVersion": "31.0.0",
     "platforms": ["ios", "android"],
