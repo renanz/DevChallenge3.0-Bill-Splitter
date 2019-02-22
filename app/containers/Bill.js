@@ -6,7 +6,7 @@ import {
   Button,
   ScrollView,
   Text,
-  TouchableOpacity
+  Picker
 } from "react-native";
 
 export default class Bill extends React.Component {
@@ -40,7 +40,7 @@ export default class Bill extends React.Component {
 
   appendToList = () => {
     const { itemsList, itemValue } = this.state;
-    if (itemValue) itemsList.push(itemValue);
+    if (itemValue) itemsList.push({ value: itemValue, friendId: 0 });
     this.setState({ itemsList, itemValue: 0 });
   };
 
@@ -56,7 +56,7 @@ export default class Bill extends React.Component {
               keyboardType="numeric"
               placeholder="Value"
               placeholderTextColor="black"
-              onChangeText={text => this.setState({ itemValue: text })}
+              onChangeText={text => this.setState({ itemValue: Number(text) })}
             />
             <Button
               title="Add Item"
@@ -65,15 +65,23 @@ export default class Bill extends React.Component {
             />
           </View>
         </View>
-        
+
         <ScrollView style={styles.body}>
-          {this.state.itemsList.map((value, key) => {
-            <Text key={key}>{value}</Text>
-          })}
+          {this.state.itemsList.map((data, key) => (
+            <View key={key} style={styles.element}>
+              <View style={styles.listItem}>
+                <Text>{data.value}</Text>
+              </View>
+              <Picker mode="dropdown" selectedValue={data.friendId}>
+                {Object.keys().map((index) => {
+                  return (<Picker.Item label={this.state.props.values[index]} />)
+                })}
+              </Picker>
+            </View>
+          ))}
         </ScrollView>
 
         <View style={styles.footer}>
-
           <View style={styles.element}>
             <View style={styles.listItem}>
               <Text>Subtotal:</Text>
@@ -88,15 +96,15 @@ export default class Bill extends React.Component {
               <Text>Tax:</Text>
             </View>
             <View style={styles.listItemValue}>
-            <TextInput
-              placeholder="Write Tax"
-              keyboardType="numeric"
-              editable={true}
-              placeholderTextColor="black"
-              onChangeText={text => {
-                this.setState({ tax: text });
-              }}
-            />
+              <TextInput
+                placeholder="Write Tax"
+                keyboardType="numeric"
+                editable={true}
+                placeholderTextColor="black"
+                onChangeText={text => {
+                  this.setState({ tax: text });
+                }}
+              />
             </View>
           </View>
 
@@ -105,15 +113,15 @@ export default class Bill extends React.Component {
               <Text>Service Tax:</Text>
             </View>
             <View style={styles.listItemValue}>
-            <TextInput
-              placeholder="Write Service Tax"
-              keyboardType="numeric"
-              editable={true}
-              placeholderTextColor="black"
-              onChangeText={text => {
-                this.setState({ serviceTax: text });
-              }}
-            />
+              <TextInput
+                placeholder="Write Service Tax"
+                keyboardType="numeric"
+                editable={true}
+                placeholderTextColor="black"
+                onChangeText={text => {
+                  this.setState({ serviceTax: text });
+                }}
+              />
             </View>
           </View>
 
@@ -122,15 +130,15 @@ export default class Bill extends React.Component {
               <Text>Beverage Tax:</Text>
             </View>
             <View style={styles.listItemValue}>
-            <TextInput
-              placeholder="Write Beverage Tax"
-              keyboardType="numeric"
-              editable={true}
-              placeholderTextColor="black"
-              onChangeText={text => {
-                this.setState({ beverageTax: text });
-              }}
-            />
+              <TextInput
+                placeholder="Write Beverage Tax"
+                keyboardType="numeric"
+                editable={true}
+                placeholderTextColor="black"
+                onChangeText={text => {
+                  this.setState({ beverageTax: text });
+                }}
+              />
             </View>
           </View>
 
