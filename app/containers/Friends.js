@@ -13,19 +13,32 @@ export default class Friends extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      list: [],
+      list: [
+        "Friend1",
+        "Friend2",
+        "Friend3",
+        "Friend4",
+        "Friend5",
+        "Friend6",
+        "Friend7",
+        "Friend8",
+        "Friend9",
+        "Friend10",
+        "Friend11",
+        "Friend12",
+        "Friend13",
+        "Friend14",
+        "Friend15",
+        "Friend16"
+      ],
       friendName: ""
     };
   }
 
   appendToList = () => {
-    let temp = [];
-    const currList = this.state.list;
-    currList.forEach(element => {
-      temp.push(element);
-    });
-    if (this.state.friendName) temp.push(this.state.friendName);
-    this.setState({ list: temp, friendName: "" });
+    const { list, friendName } = this.state;
+    if (friendName) list.push(friendName);
+    this.setState({ list, friendName: "" });
   };
 
   render() {
@@ -38,6 +51,7 @@ export default class Friends extends React.Component {
               style={styles.textInput}
               editable={true}
               placeholder="Name"
+              placeholderTextColor="black"
               onChangeText={text => this.setState({ friendName: text })}
             />
             <Button
@@ -55,17 +69,26 @@ export default class Friends extends React.Component {
               </View>
               <TouchableOpacity
                 style={styles.listItemDelete}
-                onPress={() =>
+                onPress={() => {
+                  const { list } = this.state;
+                  list.splice(key, 1);
                   this.setState(() => ({
-                    list: this.state.list.splice(key, 1)
-                  }))
-                }
+                    list
+                  }));
+                }}
               >
                 <Text style={{ color: "white" }}>Delete</Text>
               </TouchableOpacity>
             </View>
           ))}
         </ScrollView>
+        <View style={styles.footer}>
+          <Button
+            title="Bill"
+            style={{width: "50%"}}
+            onPress={() => this.props.navigation.navigate("Bill", { friendsList: this.state.list })}
+          />
+        </View>
       </View>
     );
   }
@@ -74,19 +97,23 @@ export default class Friends extends React.Component {
 styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#45B39D",
     alignItems: "center",
     justifyContent: "center"
   },
   header: {
-    marginTop: 40
-  },
-  button: {
-    width: "30%"
+    marginTop: 40,
+    height: "8%"
   },
   body: {
     marginTop: 10,
-    width: "100%"
+    width: "100%",
+    height: "60%"
+  },
+  footer: {
+    height: "10%",
+    alignItems: "center",
+    justifyContent: "center"
   },
   listItem: {
     backgroundColor: "#CFCFCF",
@@ -106,6 +133,9 @@ styles = StyleSheet.create({
     borderWidth: 2,
     width: "70%",
     paddingLeft: 5
+  },
+  button: {
+    width: "30%"
   },
   input: {
     flexDirection: "row",
