@@ -16,11 +16,13 @@ export default class Bill extends React.Component {
       friendsList: this.props.navigation.state.params.friendsList,
       itemsList: [],
       itemValue: 0,
+      chosenFriendId: 0,
       subtotal: 0,
       tax: 0,
       serviceTax: 0,
       beverageTax: 0,
-      total: 0
+      total: 0,
+      language: ""
     };
   }
 
@@ -39,9 +41,9 @@ export default class Bill extends React.Component {
   }
 
   appendToList = () => {
-    const { itemsList, itemValue } = this.state;
-    if (itemValue) itemsList.push({ value: itemValue, friendId: 0 });
-    this.setState({ itemsList, itemValue: 0 });
+    const { itemsList, itemValue, chosenFriendId } = this.state;
+    if (itemValue) itemsList.push({ value: itemValue, friendId: chosenFriendId });
+    this.setState({ itemsList, itemValue: 0, chosenFriendId: 0 });
   };
 
   render() {
@@ -58,6 +60,11 @@ export default class Bill extends React.Component {
               placeholderTextColor="black"
               onChangeText={text => this.setState({ itemValue: Number(text) })}
             />
+            <Picker style={styles.picker} selectedValue={this.state.chosenFriendId} onValueChange={(value, index) => {this.setState({chosenFriendId: index})}}>
+              {this.state.friendsList.map((data, key) => (
+                <Picker key={key} label={data} value={key}/>
+              ))}
+            </Picker>
             <Button
               title="Add Item"
               style={styles.button}
@@ -68,15 +75,11 @@ export default class Bill extends React.Component {
 
         <ScrollView style={styles.body}>
           {this.state.itemsList.map((data, key) => (
-            <View key={key} style={styles.element}>
+            <View key={key} style={styles.listElement}>
               <View style={styles.listItem}>
                 <Text>{data.value}</Text>
               </View>
-              <Picker mode="dropdown" selectedValue={data.friendId}>
-                {Object.keys().map((index) => {
-                  return (<Picker.Item label={this.state.props.values[index]} />)
-                })}
-              </Picker>
+              <Text>{this.state.friendsList[data.friendId]}</Text>
             </View>
           ))}
         </ScrollView>
@@ -191,8 +194,11 @@ const styles = StyleSheet.create({
     marginRight: 3,
     borderColor: "black",
     borderWidth: 2,
-    width: "70%",
+    width: "30%",
     paddingLeft: 5
+  },
+  picker: {
+    width: "40%"
   },
   button: {
     width: "30%"
@@ -205,6 +211,11 @@ const styles = StyleSheet.create({
   },
   element: {
     height: 25,
+    marginTop: 5,
+    flexDirection: "row"
+  },
+  listElement: {
+    height: 50,
     marginTop: 5,
     flexDirection: "row"
   }
