@@ -6,7 +6,8 @@ import {
   Button,
   ScrollView,
   Text,
-  Picker
+  Picker,
+  TouchableOpacity
 } from "react-native";
 
 export default class Bill extends React.Component {
@@ -31,6 +32,11 @@ export default class Bill extends React.Component {
     this.setState({ total: subtotal + tax + serviceTax + beverageTax });
   }
 
+  updateFields() {
+    this.updateSubTotal();
+    this.updateTotal();
+  }
+
   updateSubTotal() {
     const { itemsList, subtotal } = this.state;
     subtotal = 0;
@@ -42,8 +48,10 @@ export default class Bill extends React.Component {
 
   appendToList = () => {
     const { itemsList, itemValue, chosenFriendId } = this.state;
-    if (itemValue) itemsList.push({ value: itemValue, friendId: chosenFriendId });
+    if (itemValue)
+      itemsList.push({ value: itemValue, friendId: chosenFriendId });
     this.setState({ itemsList, itemValue: 0, chosenFriendId: 0 });
+    this.updateFields();
   };
 
   render() {
@@ -60,9 +68,15 @@ export default class Bill extends React.Component {
               placeholderTextColor="black"
               onChangeText={text => this.setState({ itemValue: Number(text) })}
             />
-            <Picker style={styles.picker} selectedValue={this.state.chosenFriendId} onValueChange={(value, index) => {this.setState({chosenFriendId: index})}}>
+            <Picker
+              style={styles.picker}
+              selectedValue={this.state.chosenFriendId}
+              onValueChange={(value, index) => {
+                this.setState({ chosenFriendId: index });
+              }}
+            >
               {this.state.friendsList.map((data, key) => (
-                <Picker key={key} label={data} value={key}/>
+                <Picker key={key} label={data} value={key} />
               ))}
             </Picker>
             <Button
@@ -78,8 +92,18 @@ export default class Bill extends React.Component {
             <View key={key} style={styles.listElement}>
               <View style={styles.listItem}>
                 <Text>{data.value}</Text>
+                <Text>{this.state.friendsList[data.friendId]}</Text>
               </View>
-              <Text>{this.state.friendsList[data.friendId]}</Text>
+              <TouchableOpacity
+                style={styles.listItemDelete}
+                onPress={() => {
+                  const { itemsList } = this.state;
+                  itemsList.splice(key, 1);
+                  this.setState(() => ({ itemsList }));
+                }}
+              >
+                <Text style={{ color: "white" }}>Delete</Text>
+              </TouchableOpacity>
             </View>
           ))}
         </ScrollView>
@@ -182,11 +206,18 @@ const styles = StyleSheet.create({
     width: "50%",
     textAlign: "right",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    flexDirection: "row"
   },
   listItemValue: {
     width: "50%",
     textAlign: "left",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  listItemDelete: {
+    backgroundColor: "red",
+    width: "20%",
     alignItems: "center",
     justifyContent: "center"
   },
