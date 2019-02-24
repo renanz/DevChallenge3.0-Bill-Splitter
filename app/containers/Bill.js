@@ -23,7 +23,6 @@ export default class Bill extends React.Component {
       serviceTax: 0,
       beverageTax: 0,
       total: 0,
-      language: ""
     };
   }
 
