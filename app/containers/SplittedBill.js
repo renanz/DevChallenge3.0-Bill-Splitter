@@ -26,10 +26,6 @@ export default class SplittedBill extends React.Component {
       if (element.friendId === index) value += element.value;
     });
     let taxes = taxPercentage + serviceTaxPercentage + beverageTaxPercentage;
-    console.log("---");
-    console.log(taxPercentage);
-    console.log(serviceTaxPercentage);
-    console.log(beverageTaxPercentage);
     value *= 1 + taxes;
     return value.toFixed(2);
   };
