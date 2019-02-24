@@ -27,31 +27,25 @@ export default class Bill extends React.Component {
     };
   }
 
-  updateTotal() {
-    const { subtotal, tax, serviceTax, beverageTax } = this.state;
-    this.setState({ total: subtotal + tax + serviceTax + beverageTax });
-  }
-
-  updateFields() {
-    this.updateSubTotal();
-    this.updateTotal();
-  }
-
-  updateSubTotal() {
-    const { itemsList, subtotal } = this.state;
+  updateTotals = () => {
+    const { itemsList } = this.state;
+    var { subtotal, total } = this.state;
+    total -= subtotal;
     subtotal = 0;
     itemsList.forEach(element => {
       subtotal += element.value;
     });
-    this.setState({ subtotal });
-  }
+    total += subtotal;
+
+    this.setState({ subtotal, total });
+  };
 
   appendToList = () => {
     const { itemsList, itemValue, chosenFriendId } = this.state;
     if (itemValue)
       itemsList.push({ value: itemValue, friendId: chosenFriendId });
     this.setState({ itemsList, itemValue: 0, chosenFriendId: 0 });
-    this.updateFields();
+    this.updateTotals();
   };
 
   render() {
@@ -90,9 +84,13 @@ export default class Bill extends React.Component {
         <ScrollView style={styles.body}>
           {this.state.itemsList.map((data, key) => (
             <View key={key} style={styles.listElement}>
-              <View style={styles.listItem}>
-                <Text>{data.value}</Text>
-                <Text>{this.state.friendsList[data.friendId]}</Text>
+              <View style={styles.bodyListItem}>
+                <Text style={{ width: "50%", textAlign: "center" }}>
+                  {data.value}
+                </Text>
+                <Text style={{ width: "50%", textAlign: "center" }}>
+                  {this.state.friendsList[data.friendId]}
+                </Text>
               </View>
               <TouchableOpacity
                 style={styles.listItemDelete}
@@ -100,6 +98,7 @@ export default class Bill extends React.Component {
                   const { itemsList } = this.state;
                   itemsList.splice(key, 1);
                   this.setState(() => ({ itemsList }));
+                  this.updateTotals();
                 }}
               >
                 <Text style={{ color: "white" }}>Delete</Text>
@@ -114,7 +113,7 @@ export default class Bill extends React.Component {
               <Text>Subtotal:</Text>
             </View>
             <View style={styles.listItemValue}>
-              <Text>{this.state.subtotal}</Text>
+              <Text style={{ textAlign: "center" }}>{this.state.subtotal}</Text>
             </View>
           </View>
 
@@ -126,10 +125,15 @@ export default class Bill extends React.Component {
               <TextInput
                 placeholder="Write Tax"
                 keyboardType="numeric"
+                style={{ textAlign: "center" }}
                 editable={true}
                 placeholderTextColor="black"
                 onChangeText={text => {
-                  this.setState({ tax: text });
+                  var { tax, total } = this.state;
+                  total -= tax;
+                  tax = Number(text);
+                  total += tax;
+                  this.setState({ tax, total });
                 }}
               />
             </View>
@@ -142,11 +146,16 @@ export default class Bill extends React.Component {
             <View style={styles.listItemValue}>
               <TextInput
                 placeholder="Write Service Tax"
+                style={{ textAlign: "center" }}
                 keyboardType="numeric"
                 editable={true}
                 placeholderTextColor="black"
                 onChangeText={text => {
-                  this.setState({ serviceTax: text });
+                  var { serviceTax, total } = this.state;
+                  total -= serviceTax;
+                  serviceTax = Number(text);
+                  total += serviceTax;
+                  this.setState({ serviceTax, total });
                 }}
               />
             </View>
@@ -159,11 +168,16 @@ export default class Bill extends React.Component {
             <View style={styles.listItemValue}>
               <TextInput
                 placeholder="Write Beverage Tax"
+                style={{ textAlign: "center" }}
                 keyboardType="numeric"
                 editable={true}
                 placeholderTextColor="black"
                 onChangeText={text => {
-                  this.setState({ beverageTax: text });
+                  var { beverageTax, total } = this.state;
+                  total -= beverageTax;
+                  beverageTax = Number(text);
+                  total += beverageTax;
+                  this.setState({ beverageTax, total });
                 }}
               />
             </View>
@@ -174,9 +188,22 @@ export default class Bill extends React.Component {
               <Text>Total:</Text>
             </View>
             <View style={styles.listItemValue}>
-              <Text>{this.state.total}</Text>
+              <Text style={{ textAlign: "center" }}>{this.state.total}</Text>
             </View>
           </View>
+          <Button
+            title="Split Bill"
+            style={{ width: "50%" }}
+            onPress={() =>
+              this.props.navigation.navigate("SplittedBill", {
+                friendsList: this.state.friendsList,
+                itemsList: this.state.itemsList,
+                tax: this.state.tax / this.state.subtotal,
+                serviceTax: this.state.serviceTax / this.state.subtotal,
+                beverageTax: this.state.beverageTax / this.state.subtotal
+              })
+            }
+          />
         </View>
       </View>
     );
@@ -192,7 +219,7 @@ const styles = StyleSheet.create({
   },
   header: {
     marginTop: 20,
-    height: "5%"
+    height: "10%"
   },
   body: {
     marginTop: 10,
@@ -215,6 +242,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
+  bodyListItem: {
+    width: "80%",
+    textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row"
+  },
   listItemDelete: {
     backgroundColor: "red",
     width: "20%",
@@ -229,7 +263,9 @@ const styles = StyleSheet.create({
     paddingLeft: 5
   },
   picker: {
-    width: "40%"
+    width: "40%",
+    borderWidth: 2,
+    borderColor: "black"
   },
   button: {
     width: "30%"

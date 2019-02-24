@@ -13,24 +13,7 @@ export default class Friends extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      list: [
-        "Friend1",
-        "Friend2",
-        "Friend3",
-        "Friend4",
-        "Friend5",
-        "Friend6",
-        "Friend7",
-        "Friend8",
-        "Friend9",
-        "Friend10",
-        "Friend11",
-        "Friend12",
-        "Friend13",
-        "Friend14",
-        "Friend15",
-        "Friend16"
-      ],
+      list: [],
       friendName: ""
     };
   }
@@ -84,9 +67,13 @@ export default class Friends extends React.Component {
         </ScrollView>
         <View style={styles.footer}>
           <Button
-            title="Bill"
-            style={{width: "50%"}}
-            onPress={() => this.props.navigation.navigate("Bill", { friendsList: this.state.list })}
+            title="Specify Bill"
+            style={{ width: "50%" }}
+            onPress={() =>
+              this.props.navigation.navigate("Bill", {
+                friendsList: this.state.list
+              })
+            }
           />
         </View>
       </View>
